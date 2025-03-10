@@ -1,0 +1,315 @@
+2025-03-08 21:02:44,480 - app.config - INFO - Configuration file not found, creating default
+2025-03-08 21:02:44,481 - app.config - INFO - Saved configuration to config.json
+2025-03-08 21:03:54,259 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-08 21:03:54,259 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-08 21:03:54,266 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-08 21:03:54,666 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-08 21:03:57,971 - app.main - ERROR - Error in worker thread: 'Месяц'
+2025-03-08 21:04:33,701 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-08 21:04:33,702 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-08 21:04:33,702 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-08 21:04:34,078 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-08 21:04:37,399 - app.main - ERROR - Error in worker thread: 'Месяц'
+2025-03-08 21:06:02,485 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:06:25,016 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-08 21:06:25,017 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-08 21:06:25,018 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-08 21:06:25,407 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-08 21:06:28,747 - app.main - ERROR - Error in worker thread: 'Месяц'
+2025-03-08 21:07:13,281 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:07:25,260 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-08 21:07:25,260 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-08 21:07:25,262 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-08 21:07:25,666 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-08 21:07:29,025 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-08 21:07:29,030 - app.main - ERROR - Error in worker thread: 'Месяц'
+2025-03-08 21:08:09,267 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:08:24,865 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-08 21:08:24,866 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-08 21:08:24,867 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-08 21:08:25,261 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-08 21:08:28,653 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-08 21:08:28,658 - app.main - ERROR - Error in worker thread: 'Месяц'
+2025-03-08 21:09:19,301 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:09:29,804 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-08 21:09:29,805 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-08 21:09:29,806 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-08 21:09:30,209 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-08 21:09:33,629 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-08 21:09:33,634 - app.core.file_processor - ERROR - No ZNP data found in the database. Please import ZNP data first.
+2025-03-08 21:09:33,634 - app.main - ERROR - Error in worker thread: No ZNP data found in the database. Please import ZNP data first.
+2025-03-08 21:10:15,985 - app.main - ERROR - Error importing znp: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:10:15,987 - app.main - ERROR - Error importing active: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:10:15,989 - app.main - ERROR - Error importing matrix: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:10:15,989 - app.main - ERROR - Error in worker thread: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:10:46,301 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:11:27,304 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-08 21:11:27,305 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-08 21:11:27,305 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-08 21:11:27,709 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-08 21:11:31,124 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-08 21:11:31,129 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-08 21:11:31,129 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-08 21:11:31,133 - app.main - ERROR - Error in worker thread: 'Накладная №'
+2025-03-08 21:12:09,566 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:13:54,644 - app.main - ERROR - Error importing active: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:13:54,646 - app.main - ERROR - Error importing matrix: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:13:54,647 - app.main - ERROR - Error in worker thread: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:14:36,017 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:15:07,277 - app.main - ERROR - Error importing active: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:15:07,280 - app.main - ERROR - Error importing matrix: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:15:07,280 - app.main - ERROR - Error in worker thread: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:16:21,464 - app.config - INFO - Loaded configuration from config.json
+2025-03-08 21:16:49,394 - app.main - ERROR - Error importing active: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:16:49,397 - app.main - ERROR - Error importing matrix: catching classes that do not inherit from BaseException is not allowed
+2025-03-08 21:16:49,397 - app.main - ERROR - Error in worker thread: catching classes that do not inherit from BaseException is not allowed
+2025-03-09 14:00:31,483 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:06:43,694 - app.database.operations - ERROR - Error adding active routes: (sqlite3.IntegrityError) UNIQUE constraint failed: active_routes.route_id
+[SQL: INSERT INTO active_routes (route_id) VALUES (?) RETURNING id]
+[parameters: ('2',)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-03-09 15:06:43,695 - app.main - ERROR - Error importing active: (sqlite3.IntegrityError) UNIQUE constraint failed: active_routes.route_id
+[SQL: INSERT INTO active_routes (route_id) VALUES (?) RETURNING id]
+[parameters: ('2',)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-03-09 15:07:58,235 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:08:33,035 - app.database.operations - INFO - Skipping duplicate route ID: 2
+2025-03-09 15:08:33,036 - app.database.operations - INFO - Skipping duplicate route ID: 25
+2025-03-09 15:08:33,036 - app.database.operations - INFO - Skipping duplicate route ID: 26
+2025-03-09 15:08:33,036 - app.database.operations - INFO - Skipping duplicate route ID: 31
+2025-03-09 15:08:33,036 - app.database.operations - INFO - Skipping duplicate route ID: 34
+2025-03-09 15:08:33,037 - app.database.operations - INFO - Skipping duplicate route ID: 35
+2025-03-09 15:08:33,037 - app.database.operations - INFO - Skipping duplicate route ID: 36
+2025-03-09 15:08:33,037 - app.database.operations - INFO - Skipping duplicate route ID: 37
+2025-03-09 15:08:33,037 - app.database.operations - INFO - Skipping duplicate route ID: 38
+2025-03-09 15:08:33,037 - app.database.operations - INFO - Skipping duplicate route ID: 39
+2025-03-09 15:08:33,037 - app.database.operations - INFO - Skipping duplicate route ID: 40
+2025-03-09 15:08:33,037 - app.database.operations - INFO - Skipping duplicate route ID: 41
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 42
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 43
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 44
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 46
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 47
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 48
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 49
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 50
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 52
+2025-03-09 15:08:33,038 - app.database.operations - INFO - Skipping duplicate route ID: 53
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 54
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 55
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 58
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 61
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 62
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 64
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 65
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 66
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 68
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 74
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 76
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 77
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 79
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 83
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 98
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 462
+2025-03-09 15:08:33,039 - app.database.operations - INFO - Skipping duplicate route ID: 486
+2025-03-09 15:08:33,040 - app.database.operations - INFO - Skipping duplicate route ID: 488
+2025-03-09 15:08:33,040 - app.database.operations - INFO - Skipping duplicate route ID: 519
+2025-03-09 15:08:33,040 - app.database.operations - INFO - Skipping duplicate route ID: 532
+2025-03-09 15:10:12,743 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:10:24,604 - app.database.operations - INFO - Processing 42 active routes
+2025-03-09 15:10:24,611 - app.database.operations - INFO - Cleared existing active routes
+2025-03-09 15:10:24,617 - app.database.operations - INFO - Successfully added 42 active routes
+2025-03-09 15:11:01,834 - app.database.operations - INFO - Processing 42 active routes
+2025-03-09 15:11:01,838 - app.database.operations - INFO - Cleared existing active routes
+2025-03-09 15:11:01,842 - app.database.operations - INFO - Successfully added 42 active routes
+2025-03-09 15:11:42,152 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:11:42,152 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:11:42,153 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:11:42,555 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:11:45,922 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:11:45,936 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-09 15:11:45,936 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-09 15:12:28,903 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:13:07,596 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:13:07,596 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:13:07,598 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:13:07,999 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:13:11,382 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:13:11,398 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-09 15:13:11,398 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-09 15:13:35,327 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:13:48,771 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:13:48,771 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:13:48,772 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:13:49,179 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:13:52,607 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:13:52,623 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-09 15:13:52,623 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-09 15:14:35,365 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:14:58,814 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:14:58,815 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:14:58,816 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:14:59,217 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:15:02,614 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:15:02,629 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-09 15:15:02,629 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-09 15:15:27,099 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:15:39,873 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:15:39,874 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:15:39,875 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:15:40,272 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:15:43,652 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:15:43,667 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-09 15:15:43,667 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-09 15:16:26,563 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:16:42,459 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:16:42,459 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:16:42,460 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:16:42,867 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:16:46,272 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:16:46,277 - app.core.file_processor - ERROR - No ZNP data found in the database. Please import ZNP data first.
+2025-03-09 15:19:03,471 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:19:29,324 - app.database.operations - INFO - Processing 42 active routes
+2025-03-09 15:19:29,329 - app.database.operations - INFO - Cleared existing active routes
+2025-03-09 15:19:29,334 - app.database.operations - INFO - Successfully added 42 active routes
+2025-03-09 15:19:29,335 - app.database.operations - ERROR - Error adding matrix mappings: 'Heritage'
+2025-03-09 15:19:29,335 - app.main - ERROR - Error importing matrix: 'Heritage'
+2025-03-09 15:19:48,182 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:19:48,183 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:19:48,183 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:19:48,596 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:19:52,005 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:19:52,011 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-09 15:19:52,011 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-09 15:19:52,135 - app.core.file_processor - INFO - Final data types: Вагон №                                int64
+Накладная №                           object
+Ст. отправления                       object
+Ст. назначения                        object
+Прибытие на ст. отправл.      datetime64[ns]
+Отчетная дата                 datetime64[ns]
+Прибытие на ст. назн.         datetime64[ns]
+Груж\пор                              object
+Тип вагона                            object
+Расстояние                           float64
+Собственник                           object
+Грузоотправитель                      object
+Грузополучатель                       object
+Простой в ожидании ремонта           float64
+W&N                                   object
+Batch ID                               int64
+Месяц                                  int64
+Final RouteID                         object
+dtype: object
+2025-03-09 15:19:52,136 - app.core.file_processor - INFO - Overrides data types: Вагон №          int64
+Накладная №     object
+ЗНП Override    object
+dtype: object
+2025-03-09 15:19:54,198 - app.core.file_processor - INFO - Route ID data exported to ./output\Route_ID_20250309_151954.csv
+2025-03-09 15:19:54,199 - app.core.file_processor - INFO - Workflow processing completed successfully
+2025-03-09 15:19:54,211 - app.config - INFO - Saved configuration to config.json
+2025-03-09 15:24:23,532 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:26:48,902 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:26:48,926 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 0, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:26:54,590 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:26:54,613 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 0, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:29:31,290 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:29:31,755 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 3, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:29:37,373 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:29:38,937 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 12, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:52:29,878 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:52:29,940 - __main__ - ERROR - Error processing expense files: 'route_id'
+2025-03-09 15:52:38,354 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:53:35,362 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:54:01,712 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:54:01,735 - __main__ - ERROR - Error processing expense files: 'route_id'
+2025-03-09 15:54:17,985 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:54:18,429 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 3, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:54:23,083 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:54:24,620 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 12, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:56:21,626 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:56:22,066 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 3, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:56:26,595 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:56:28,145 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 12, 'skipped_files': 0, 'error_files': []}
+2025-03-09 15:57:46,551 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:57:46,559 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 15:58:13,826 - app.database.operations - INFO - Processing 42 active routes
+2025-03-09 15:58:13,830 - app.database.operations - INFO - Cleared existing active routes
+2025-03-09 15:58:13,835 - app.database.operations - INFO - Successfully added 42 active routes
+2025-03-09 15:58:13,860 - app.database.operations - INFO - Successfully added 700 matrix mappings
+2025-03-09 15:58:22,448 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-09 15:58:22,448 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-09 15:58:22,449 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-09 15:58:22,851 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-09 15:58:26,209 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-09 15:58:26,214 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-09 15:58:26,214 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-09 15:58:26,336 - app.core.file_processor - INFO - Final data types: Вагон №                                int64
+Накладная №                           object
+Ст. отправления                       object
+Ст. назначения                        object
+Прибытие на ст. отправл.      datetime64[ns]
+Отчетная дата                 datetime64[ns]
+Прибытие на ст. назн.         datetime64[ns]
+Груж\пор                              object
+Тип вагона                            object
+Расстояние                           float64
+Собственник                           object
+Грузоотправитель                      object
+Грузополучатель                       object
+Простой в ожидании ремонта           float64
+W&N                                   object
+Batch ID                               int64
+Месяц                                  int64
+Final RouteID                         object
+dtype: object
+2025-03-09 15:58:26,337 - app.core.file_processor - INFO - Overrides data types: Вагон №          int64
+Накладная №     object
+ЗНП Override    object
+dtype: object
+2025-03-09 15:58:28,547 - app.core.file_processor - INFO - Route ID data exported to ./output\Route_ID_20250309_155828.csv
+2025-03-09 15:58:28,548 - app.core.file_processor - INFO - Workflow processing completed successfully
+2025-03-09 15:58:28,562 - app.config - INFO - Saved configuration to config.json
+2025-03-09 16:00:30,777 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 16:00:31,275 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 3, 'skipped_files': 0, 'error_files': []}
+2025-03-09 16:00:36,037 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 16:00:37,673 - __main__ - INFO - Expense processing complete. Results: {'processed_files': 12, 'skipped_files': 0, 'error_files': []}
+2025-03-09 16:20:13,570 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 16:20:13,577 - app.config - INFO - Loaded configuration from config.json
+2025-03-09 16:27:03,528 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 15:22:07,423 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 15:22:07,460 - app.core.file_processor - INFO - Starting workflow processing
+2025-03-10 15:22:07,460 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-10 15:22:07,465 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_21012025.xlsx
+2025-03-10 15:22:07,839 - app.core.file_processor - INFO - Processing file: C:/Users/user/Desktop/ART/STG\STGDaily_28022025.xlsx
+2025-03-10 15:22:11,278 - app.core.file_processor - INFO - Extracted months from dates: [2 1]
+2025-03-10 15:22:11,285 - app.core.file_processor - INFO - Months in loaded_batches: [2 1]
+2025-03-10 15:22:11,286 - app.core.file_processor - INFO - Months in znp_data: [10 11 12  1  2]
+2025-03-10 15:22:11,409 - app.core.file_processor - INFO - Final data types: Вагон №                                int64
+Накладная №                           object
+Ст. отправления                       object
+Ст. назначения                        object
+Прибытие на ст. отправл.      datetime64[ns]
+Отчетная дата                 datetime64[ns]
+Прибытие на ст. назн.         datetime64[ns]
+Груж\пор                              object
+Тип вагона                            object
+Расстояние                           float64
+Собственник                           object
+Грузоотправитель                      object
+Грузополучатель                       object
+Простой в ожидании ремонта           float64
+W&N                                   object
+Batch ID                               int64
+Месяц                                  int64
+Final RouteID                         object
+dtype: object
+2025-03-10 15:22:11,410 - app.core.file_processor - INFO - Overrides data types: Вагон №          int64
+Накладная №     object
+ЗНП Override    object
+dtype: object
+2025-03-10 15:22:13,463 - app.core.file_processor - INFO - Route ID data exported to ./output\Route_ID_20250310_152213.csv
+2025-03-10 15:22:13,463 - app.core.file_processor - INFO - Workflow processing completed successfully
+2025-03-10 15:22:13,466 - __main__ - INFO - STG processing complete. Output saved to: ./output\Route_ID_20250310_152213.csv
+2025-03-10 15:22:13,466 - app.config - INFO - Saved configuration to config.json
+2025-03-10 15:23:00,375 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 15:23:00,383 - app.config - INFO - Loaded configuration from config.json

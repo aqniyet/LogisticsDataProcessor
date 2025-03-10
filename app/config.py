@@ -1,0 +1,42 @@
+import os
+import json
+import logging
+
+logger = logging.getLogger(__name__)
+
+DEFAULT_CONFIG = {
+    "base_directory": "./data",
+    "output_directory": "./output",
+    "database_path": "logistics_processor.db",
+    "stg_folder": "",
+    "existing_data_path": "",
+    "route_id_path": ""
+}
+
+CONFIG_FILE = "config.json"
+
+def load_config(config_file: str = CONFIG_FILE) -> dict:
+    """Load configuration from JSON file, or create default if not exists."""
+    if os.path.exists(config_file):
+        try:
+            with open(config_file, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            logger.info(f"Loaded configuration from {config_file}")
+            return config
+        except Exception as e:
+            logger.error(f"Error loading configuration: {str(e)}")
+            return DEFAULT_CONFIG
+    else:
+        logger.info(f"Configuration file not found, creating default")
+        save_config(DEFAULT_CONFIG, config_file)
+        return DEFAULT_CONFIG
+
+def save_config(config: dict, config_file: str = CONFIG_FILE) -> None:
+    """Save configuration to JSON file."""
+    try:
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=4)
+        logger.info(f"Saved configuration to {config_file}")
+    except Exception as e:
+        logger.error(f"Error saving configuration: {str(e)}")
+        raise
