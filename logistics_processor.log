@@ -313,3 +313,20 @@ dtype: object
 2025-03-10 15:22:13,466 - app.config - INFO - Saved configuration to config.json
 2025-03-10 15:23:00,375 - app.config - INFO - Loaded configuration from config.json
 2025-03-10 15:23:00,383 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:09:55,090 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:09:55,097 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:09:55,209 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-10 16:22:12,178 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:22:12,187 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:22:12,302 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-10 16:50:55,176 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:50:55,210 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:50:55,351 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-10 16:51:16,375 - app.config - INFO - Saved configuration to config.json
+2025-03-10 16:51:17,744 - app.utils.file_utils - INFO - Created directory: ./data\Expenses_processed
+2025-03-10 16:51:17,744 - app.utils.file_utils - INFO - Created directory: ./data\Expenses_processed_extended
+2025-03-10 16:54:32,316 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:54:32,324 - app.config - INFO - Loaded configuration from config.json
+2025-03-10 16:54:32,437 - app.utils.file_utils - INFO - Found 2 files matching pattern 'STGDaily_*.xlsx' in C:/Users/user/Desktop/ART/STG
+2025-03-10 16:55:04,975 - app.config - INFO - Saved configuration to config.json
+2025-03-10 16:55:08,213 - app.utils.file_utils - INFO - Created directory: ./data\Expenses_processed

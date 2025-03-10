@@ -79,7 +79,7 @@ class LogisticsProcessorApp(QMainWindow):
         layout = QVBoxLayout()
         
         # Input folder section
-        input_group = QGroupBox("Input Data")
+        input_group = QGroupBox("STG Folder Configuration")
         input_layout = QVBoxLayout()
         
         stg_layout = QHBoxLayout()
@@ -91,14 +91,10 @@ class LogisticsProcessorApp(QMainWindow):
         stg_layout.addWidget(stg_browse_btn)
         input_layout.addLayout(stg_layout)
         
-        existing_layout = QHBoxLayout()
-        existing_layout.addWidget(QLabel("Existing Data File:"))
-        self.existing_data_edit = QLineEdit(self.config.get("existing_data_path", ""))
-        existing_layout.addWidget(self.existing_data_edit)
-        existing_browse_btn = QPushButton("Browse...")
-        existing_browse_btn.clicked.connect(self.browse_existing_data)
-        existing_layout.addWidget(existing_browse_btn)
-        input_layout.addLayout(existing_layout)
+        # Add folder status
+        self.folder_status = QLabel("")
+        input_layout.addWidget(self.folder_status)
+        self.update_folder_status()  # Initial status update
         
         input_group.setLayout(input_layout)
         layout.addWidget(input_group)
@@ -107,7 +103,7 @@ class LogisticsProcessorApp(QMainWindow):
         process_group = QGroupBox("Processing")
         process_layout = QVBoxLayout()
         
-        self.process_stg_btn = QPushButton("Process STG Files")
+        self.process_stg_btn = QPushButton("Process All STG Files")
         self.process_stg_btn.clicked.connect(self.process_stg_files)
         process_layout.addWidget(self.process_stg_btn)
         
@@ -121,7 +117,7 @@ class LogisticsProcessorApp(QMainWindow):
         layout.addWidget(process_group)
         
         # Output section
-        output_group = QGroupBox("Output")
+        output_group = QGroupBox("Processing Output")
         output_layout = QVBoxLayout()
         
         self.stg_output = QTextEdit()
@@ -133,6 +129,22 @@ class LogisticsProcessorApp(QMainWindow):
         
         self.stg_tab.setLayout(layout)
     
+    def update_folder_status(self):
+        """Update the folder status label with current STG file count."""
+        stg_folder = self.config.get("stg_folder", "")
+        if not stg_folder or not os.path.exists(stg_folder):
+            self.folder_status.setText("STG folder not found or not configured")
+            self.folder_status.setStyleSheet("color: red")
+            return
+            
+        stg_files = get_files_by_pattern(stg_folder, "STGDaily_*.xlsx")
+        if not stg_files:
+            self.folder_status.setText("No STG files found in folder")
+            self.folder_status.setStyleSheet("color: orange")
+        else:
+            self.folder_status.setText(f"Found {len(stg_files)} STG files ready for processing")
+            self.folder_status.setStyleSheet("color: green")
+    
     def setup_expense_tab(self):
         """Set up the Expense processing tab."""
         layout = QVBoxLayout()
@@ -141,12 +153,20 @@ class LogisticsProcessorApp(QMainWindow):
         input_group = QGroupBox("Input Data")
         input_layout = QVBoxLayout()
         
-        folder_type_layout = QHBoxLayout()
-        folder_type_layout.addWidget(QLabel("Expense Folder Type:"))
-        self.folder_type_combo = QComboBox()
-        self.folder_type_combo.addItems(["1", "2"])
-        folder_type_layout.addWidget(self.folder_type_combo)
-        input_layout.addLayout(folder_type_layout)
+        # Expense folder selection
+        expense_folder_layout = QHBoxLayout()
+        expense_folder_layout.addWidget(QLabel("Expenses Folder:"))
+        self.expense_folder_edit = QLineEdit(self.config.get("expense_folder", ""))
+        expense_folder_layout.addWidget(self.expense_folder_edit)
+        expense_browse_btn = QPushButton("Browse...")
+        expense_browse_btn.clicked.connect(self.browse_expense_folder)
+        expense_folder_layout.addWidget(expense_browse_btn)
+        input_layout.addLayout(expense_folder_layout)
+        
+        # Add folder status
+        self.expense_folder_status = QLabel("")
+        input_layout.addWidget(self.expense_folder_status)
+        self.update_expense_folder_status()  # Initial status update
         
         route_id_layout = QHBoxLayout()
         route_id_layout.addWidget(QLabel("Route ID File:"))
@@ -178,7 +198,7 @@ class LogisticsProcessorApp(QMainWindow):
         layout.addWidget(process_group)
         
         # Output section
-        output_group = QGroupBox("Output")
+        output_group = QGroupBox("Processing Output")
         output_layout = QVBoxLayout()
         
         self.expense_output = QTextEdit()
@@ -189,6 +209,31 @@ class LogisticsProcessorApp(QMainWindow):
         layout.addWidget(output_group)
         
         self.expense_tab.setLayout(layout)
+    
+    def update_expense_folder_status(self):
+        """Update the expense folder status label with current file count."""
+        expense_folder = self.config.get("expense_folder", "")
+        if not expense_folder or not os.path.exists(expense_folder):
+            self.expense_folder_status.setText("Expense folder not found or not configured")
+            self.expense_folder_status.setStyleSheet("color: red")
+            return
+            
+        expense_files = [f for f in os.listdir(expense_folder) if f.lower().endswith(('.xlsx', '.xls'))]
+        if not expense_files:
+            self.expense_folder_status.setText("No expense files found in folder")
+            self.expense_folder_status.setStyleSheet("color: orange")
+        else:
+            self.expense_folder_status.setText(f"Found {len(expense_files)} expense files ready for processing")
+            self.expense_folder_status.setStyleSheet("color: green")
+    
+    def browse_expense_folder(self):
+        """Browse for expense files folder."""
+        folder = QFileDialog.getExistingDirectory(self, "Select Expense Files Folder")
+        if folder:
+            self.expense_folder_edit.setText(folder)
+            self.config["expense_folder"] = folder
+            save_config(self.config)  # Save the configuration immediately
+            self.update_expense_folder_status()  # Update the status to show new file count
     
     def setup_reference_tab(self):
         """Set up the Reference Data tab."""
@@ -333,6 +378,8 @@ class LogisticsProcessorApp(QMainWindow):
         if folder:
             self.stg_folder_edit.setText(folder)
             self.config["stg_folder"] = folder
+            save_config(self.config)  # Save the configuration immediately
+            self.update_folder_status()  # Update the status to show new file count
     
     def browse_existing_data(self):
         """Browse for existing data file."""
@@ -421,75 +468,86 @@ class LogisticsProcessorApp(QMainWindow):
     
     # Processing Methods
     def process_stg_files(self):
-        """Process STG files to generate Route ID data."""
-        stg_folder = self.stg_folder_edit.text()
-        existing_data_path = self.existing_data_edit.text()
-        
-        if not stg_folder:
-            QMessageBox.warning(self, "Input Required", "Please select STG files folder")
-            return
-        
-        if not existing_data_path:
-            QMessageBox.warning(self, "Input Required", "Please select existing data file")
-            return
-        
-        params = {
-            "config": self.config,
-            "stg_folder": stg_folder,
-            "existing_data_path": existing_data_path
-        }
-        
-        self.worker = ProcessingWorker("process_stg", params)
-        self.worker.progress_update.connect(self.update_stg_progress)
-        self.worker.process_complete.connect(self.stg_processing_complete)
-        
+        """Process all STG files in the configured folder."""
+        # Disable the process button while running
         self.process_stg_btn.setEnabled(False)
         self.stg_status.setText("Processing...")
-        self.stg_progress.setValue(0)
+        self.stg_output.clear()
         
-        self.worker.start()
-    
-    def update_stg_progress(self, value, message):
-        """Update STG processing progress."""
-        self.stg_progress.setValue(value)
-        self.stg_status.setText(message)
-    
-    def stg_processing_complete(self, success, message, result):
-        """Handle STG processing completion."""
-        self.process_stg_btn.setEnabled(True)
-        self.stg_status.setText(message)
-        
-        if success:
-            self.stg_output.append(f"Processing completed successfully!")
-            self.stg_output.append(f"Output file: {result.get('output_path')}")
+        try:
+            # Get STG folder path
+            stg_folder = self.config.get("stg_folder", "")
+            if not stg_folder or not os.path.exists(stg_folder):
+                raise ValueError("STG folder not found or not configured")
+                
+            # Find all STG files
+            stg_files = get_files_by_pattern(stg_folder, "STGDaily_*.xlsx")
+            if not stg_files:
+                raise ValueError("No STG files found in the configured folder")
             
-            # Update route_id_path in config
-            if 'output_path' in result:
-                self.route_id_edit.setText(result['output_path'])
-                self.config["route_id_path"] = result['output_path']
-                save_config(self.config)
-        else:
-            self.stg_output.append(f"Processing failed: {message}")
+            # Initialize progress bar
+            self.stg_progress.setMaximum(len(stg_files))
+            self.stg_progress.setValue(0)
+            
+            # Process each file
+            processor = FileProcessor(self.config)
+            for i, file_path in enumerate(stg_files, 1):
+                self.stg_output.append(f"Processing file {i}/{len(stg_files)}: {os.path.basename(file_path)}")
+                QApplication.processEvents()  # Keep UI responsive
+                
+                try:
+                    processor.process_stg_file(file_path)
+                    self.stg_output.append(f"✓ Successfully processed {os.path.basename(file_path)}\n")
+                except Exception as e:
+                    self.stg_output.append(f"✗ Error processing {os.path.basename(file_path)}: {str(e)}\n")
+                
+                self.stg_progress.setValue(i)
+                QApplication.processEvents()
+            
+            # Update status
+            self.stg_status.setText(f"Completed processing {len(stg_files)} files")
+            self.stg_status.setStyleSheet("color: green")
+            
+        except Exception as e:
+            self.stg_status.setText(f"Error: {str(e)}")
+            self.stg_status.setStyleSheet("color: red")
+            self.stg_output.append(f"Error: {str(e)}")
+        
+        finally:
+            # Re-enable the process button
+            self.process_stg_btn.setEnabled(True)
+            self.update_folder_status()  # Refresh folder status
     
     def process_expense_files(self):
         """Process expense files with Route ID data."""
-        folder_type = self.folder_type_combo.currentText()
+        expense_folder = self.expense_folder_edit.text()
         route_id_path = self.route_id_edit.text()
         
+        # Validate inputs
+        if not expense_folder:
+            QMessageBox.warning(self, "Input Required", "Please select expense files folder")
+            return
+            
         if not route_id_path:
             QMessageBox.warning(self, "Input Required", "Please select Route ID file")
             return
         
+        if not os.path.exists(expense_folder):
+            QMessageBox.warning(self, "Folder Not Found", "Expense folder does not exist")
+            return
+            
         if not os.path.exists(route_id_path):
             QMessageBox.warning(self, "File Not Found", "Route ID file does not exist")
             return
         
+        # Setup parameters for processing
         params = {
             "config": self.config,
-            "folder_type": folder_type,
+            "expense_folder": expense_folder,
             "route_id_path": route_id_path
         }
         
+        # Start processing in worker thread
         self.worker = ProcessingWorker("process_expenses", params)
         self.worker.progress_update.connect(self.update_expense_progress)
         self.worker.process_complete.connect(self.expense_processing_complete)
@@ -625,13 +683,13 @@ class ProcessingWorker(QThread):
     def process_expense_files(self):
         """Process expense files with Route ID data."""
         config = self.params.get("config")
-        folder_type = self.params.get("folder_type")
+        expense_folder = self.params.get("expense_folder")
         route_id_path = self.params.get("route_id_path")
         
         processor = ExpenseProcessor(config)
         
-        self.progress_update.emit(20, f"Processing expense files (Type {folder_type})...")
-        result = processor.process_expense_folder(folder_type, route_id_path)
+        self.progress_update.emit(20, f"Processing expense files in folder: {expense_folder}")
+        result = processor.process_expense_folder(expense_folder, route_id_path)
         
         if result["processed_files"] > 0:
             self.progress_update.emit(100, "Processing complete")

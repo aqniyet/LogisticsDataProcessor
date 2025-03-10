@@ -9,5 +9,6 @@
     "exceptions_path": "C:/Users/user/Desktop/ART/Exceptions.xlsx",
     "overrides_path": "C:/Users/user/Desktop/ART/Overrides.xlsx",
     "active_path": "C:/Users/user/Desktop/RouteID automation/Active.csv",
-    "matrix_path": "C:/Users/user/Desktop/RouteID automation/Matrix.csv"
+    "matrix_path": "C:/Users/user/Desktop/RouteID automation/Matrix.csv",
+    "expense_folder": "C:/Users/user/Desktop/RouteID automation/Expenses_type_2"
 }

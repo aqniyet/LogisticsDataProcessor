@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class ExpenseProcessor:
     """
-    Replaces your Processor_2.py script functionality.
     Process expense files using RouteID data and apply 1C mappings.
     """
     
@@ -20,17 +19,11 @@ class ExpenseProcessor:
         self.config = config
         self.base_directory = config.get('base_directory', './data')
         
-        # Setup output directories
-        self.output_directories = {}
-        for folder_type in ['1', '2']:
-            self.output_directories[folder_type] = {
-                'processed': os.path.join(self.base_directory, f'Expenses_type_{folder_type}_processed'),
-                'processed_extended': os.path.join(self.base_directory, f'Expenses_type_{folder_type}_processed_extended')
-            }
-            
-            # Ensure directories exist
-            for dir_path in self.output_directories[folder_type].values():
-                ensure_directory_exists(dir_path)
+        # Setup output directory
+        self.output_directory = os.path.join(self.base_directory, 'Expenses_processed')
+        
+        # Ensure directory exists
+        ensure_directory_exists(self.output_directory)
     
     def format_value(self, value) -> str:
         """Format values consistently to ensure proper matching."""
@@ -55,8 +48,9 @@ class ExpenseProcessor:
         raise ValueError("Expected headers not found in the file.")
     
     def process_expense_file(self, file_path: str, reference_data: pd.DataFrame, 
-                            output_folder: str) -> Tuple[bool, str]:
-        """Process a single expense file with the route ID reference data."""
+                           active_values: set, matrix_mappings: pd.DataFrame,
+                           output_folder: str) -> Tuple[bool, str]:
+        """Process a single expense file with route ID data and 1C mappings."""
         try:
             # Load the workbook
             original_wb = load_workbook(file_path)
@@ -92,7 +86,7 @@ class ExpenseProcessor:
                 merged_data.get(output_column_name, 0), errors='coerce'
             ).fillna(0).astype(int)
             
-            # Add or update ЗНП column in the Excel file
+            # Add or update ЗНП column in Excel
             if output_column_name not in [cell.value for cell in original_ws[header_row_index]]:
                 original_ws.cell(
                     row=header_row_index, 
@@ -105,6 +99,25 @@ class ExpenseProcessor:
             # Write ЗНП values to Excel
             for row_idx, value in enumerate(merged_data[output_column_name], start=header_row_index + 1):
                 original_ws.cell(row=row_idx, column=znp_col_index, value=value)
+            
+            # Add 1C column using matrix mappings
+            merged_data['для 1С'] = merged_data['ЗНП'].apply(
+                lambda x: self.find_in_matrix_and_check(x, matrix_mappings, active_values)
+            )
+            
+            # Add or update для 1С column in Excel
+            if 'для 1С' not in [cell.value for cell in original_ws[header_row_index]]:
+                original_ws.cell(
+                    row=header_row_index, 
+                    column=original_ws.max_column + 1, 
+                    value='для 1С'
+                )
+            
+            dla_1c_col_index = [cell.value for cell in original_ws[header_row_index]].index('для 1С') + 1
+            
+            # Write для 1С values to Excel
+            for row_idx, value in enumerate(merged_data['для 1С'], start=header_row_index + 1):
+                original_ws.cell(row=row_idx, column=dla_1c_col_index, value=value)
             
             # Save the processed file
             output_file_path = os.path.join(output_folder, os.path.basename(file_path))
@@ -142,63 +155,8 @@ class ExpenseProcessor:
         
         return "value is not active"
     
-    def process_for_1c(self, file_path: str, active_values: set, 
-                      matrix_mappings: pd.DataFrame, output_folder: str) -> Tuple[bool, str]:
-        """Process a file for 1C compatibility, checking active values and matrix mappings."""
-        try:
-            # Load the workbook
-            original_wb = load_workbook(file_path)
-            original_ws = original_wb.active
-            
-            # Read the data
-            raw_data = pd.read_excel(file_path, sheet_name=0, header=None)
-            main_data, header_row_index = self.find_and_clean_headers(
-                raw_data, ['номер вагона', 'номер документа']
-            )
-            
-            if main_data.empty or 'ЗНП' not in main_data.columns:
-                return False, "Empty data or missing ЗНП column"
-            
-            # Add 1C column using matrix mappings
-            main_data['для 1С'] = main_data['ЗНП'].apply(
-                lambda x: self.find_in_matrix_and_check(x, matrix_mappings, active_values)
-            )
-            
-            # Add or update для 1С column in Excel
-            if 'для 1С' not in [cell.value for cell in original_ws[header_row_index]]:
-                original_ws.cell(
-                    row=header_row_index, 
-                    column=original_ws.max_column + 1, 
-                    value='для 1С'
-                )
-            
-            dla_1c_col_index = [cell.value for cell in original_ws[header_row_index]].index('для 1С') + 1
-            
-            # Write для 1С values to Excel
-            for row_idx, value in enumerate(main_data['для 1С'], start=header_row_index + 1):
-                original_ws.cell(row=row_idx, column=dla_1c_col_index, value=value)
-            
-            # Save the processed file
-            output_file_path = os.path.join(output_folder, os.path.basename(file_path))
-            original_wb.save(output_file_path)
-            
-            return True, output_file_path
-            
-        except Exception as e:
-            logger.error(f"Error processing file for 1C {file_path}: {str(e)}")
-            return False, str(e)
-    
-    def process_expense_folder(self, folder_type: str, route_id_data_path: str) -> Dict:
+    def process_expense_folder(self, expense_folder: str, route_id_data_path: str) -> Dict:
         """Process all expense files in a folder."""
-        # Validate folder type
-        if folder_type not in ['1', '2']:
-            raise ValueError("Folder type must be '1' or '2'")
-        
-        # Setup input/output paths
-        input_folder = os.path.join(self.base_directory, f'Expenses_type_{folder_type}')
-        output_folder = self.output_directories[folder_type]['processed']
-        output_folder_extended = self.output_directories[folder_type]['processed_extended']
-        
         # Load reference data
         reference_data = pd.read_csv(route_id_data_path, encoding='utf-8')
         reference_data['Вагон №'] = reference_data['Вагон №'].apply(self.format_value)
@@ -207,7 +165,6 @@ class ExpenseProcessor:
         # Get active routes and matrix mappings
         active_routes = get_active_routes()
         active_values = set(active_routes['route_id'].astype(str))
-        
         matrix_mappings = get_matrix_mappings()
         
         # Initialize counters
@@ -216,26 +173,17 @@ class ExpenseProcessor:
         error_files = []
         
         # Process all Excel files in the input folder
-        for file in os.listdir(input_folder):
+        for file in os.listdir(expense_folder):
             if file.lower().endswith(('.xlsx', '.xls')):
-                file_path = os.path.join(input_folder, file)
+                file_path = os.path.join(expense_folder, file)
                 
-                # Step 1: Process with RouteID
+                # Process file with both RouteID and 1C mappings in one step
                 success, result = self.process_expense_file(
-                    file_path, reference_data, output_folder
+                    file_path, reference_data, active_values, matrix_mappings, self.output_directory
                 )
                 
                 if success:
                     processed_files += 1
-                    output_file_path = result
-                    
-                    # Step 2: Process for 1C compatibility
-                    success_1c, result_1c = self.process_for_1c(
-                        output_file_path, active_values, matrix_mappings, output_folder_extended
-                    )
-                    
-                    if not success_1c:
-                        error_files.append((file, result_1c))
                 else:
                     skipped_files += 1
                     error_files.append((file, result))
