@@ -4,11 +4,11 @@
     "database_path": "logistics_processor.db",
     "stg_folder": "C:/Users/user/Desktop/ART/STG",
     "existing_data_path": "C:/Users/user/Desktop/ART/STG/STGDaily_21012025.xlsx",
-    "route_id_path": "./output\\Route_ID_20250310_152213.csv",
+    "route_id_path": "./output\\Route_ID_20250311_162954.csv",
     "znp_path": "C:/Users/user/Desktop/ART/\u0417\u041d\u041f.xlsx",
     "exceptions_path": "C:/Users/user/Desktop/ART/Exceptions.xlsx",
     "overrides_path": "C:/Users/user/Desktop/ART/Overrides.xlsx",
     "active_path": "C:/Users/user/Desktop/RouteID automation/Active.csv",
     "matrix_path": "C:/Users/user/Desktop/RouteID automation/Matrix.csv",
-    "expense_folder": "C:/Users/user/Desktop/RouteID automation/Expenses_type_2"
+    "expense_folder": "C:/Users/user/Desktop/RouteID automation/Expenses_type_1"
 }

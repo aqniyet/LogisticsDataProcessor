@@ -120,7 +120,7 @@ class FileProcessor:
         Replaces the batch ID logic from your second M-code block.
         """
         # Sort data by wagon number and report date
-        sorted_data = data.sort_values(by=["Вагон №", "Отчетная дата"])
+        sorted_data = data.sort_values(by=["wagon_number", "report_date"])
         
         # Initialize variables for batch assignment
         last_batch_id = 0
@@ -130,8 +130,8 @@ class FileProcessor:
         
         # Process each row
         for _, row in sorted_data.iterrows():
-            current_wagon = row["Вагон №"]
-            gruzh_por_value = row["Груж\\пор"]
+            current_wagon = row["wagon_number"]
+            gruzh_por_value = row["load_status"]
             
             # Assign batch ID based on logic
             if gruzh_por_value == "ГРУЖ":
@@ -144,7 +144,7 @@ class FileProcessor:
             
             # Add batch ID to row
             row_with_batch = row.copy()
-            row_with_batch["Batch ID"] = new_batch_id
+            row_with_batch["batch_id"] = new_batch_id
             result_data.append(row_with_batch)
             
             # Update tracking variables
@@ -163,17 +163,17 @@ class FileProcessor:
         """
         # Add month column safely
         try:
-            if "Месяц" not in batched_data.columns:
-                # Ensure Отчетная дата is datetime
-                if "Отчетная дата" not in batched_data.columns:
-                    raise ValueError("Required column 'Отчетная дата' is missing")
+            if "month" not in batched_data.columns:
+                # Ensure report_date is datetime
+                if "report_date" not in batched_data.columns:
+                    raise ValueError("Required column 'report_date' is missing")
                 
-                batched_data["Отчетная дата"] = pd.to_datetime(batched_data["Отчетная дата"], errors='coerce')
+                batched_data["report_date"] = pd.to_datetime(batched_data["report_date"], errors='coerce')
                 # Extract month, handling NaT values
-                batched_data["Месяц"] = batched_data["Отчетная дата"].dt.month.fillna(0).astype(int)
+                batched_data["month"] = batched_data["report_date"].dt.month.fillna(0).astype(int)
                 
                 # Log the unique months found
-                unique_months = batched_data["Месяц"].unique()
+                unique_months = batched_data["month"].unique()
                 logger.info(f"Extracted months from dates: {unique_months}")
                 
                 # If all months are 0, there might be an issue with the dates
@@ -181,17 +181,17 @@ class FileProcessor:
                     logger.error("All months are 0, indicating possible date conversion issues")
                     raise ValueError("Failed to extract valid months from dates")
             else:
-                # If Месяц column exists, ensure it's an integer
-                batched_data["Месяц"] = pd.to_numeric(batched_data["Месяц"], errors='coerce').fillna(0).astype(int)
+                # If month column exists, ensure it's an integer
+                batched_data["month"] = pd.to_numeric(batched_data["month"], errors='coerce').fillna(0).astype(int)
         except Exception as e:
             logger.error(f"Error processing month data: {str(e)}")
             logger.error(f"Available columns: {batched_data.columns.tolist()}")
-            if "Отчетная дата" in batched_data.columns:
-                logger.error(f"Sample of Отчетная дата values: {batched_data['Отчетная дата'].head()}")
+            if "report_date" in batched_data.columns:
+                logger.error(f"Sample of report_date values: {batched_data['report_date'].head()}")
             raise ValueError(f"Failed to process date/month data: {str(e)}")
         
         # Filter for loaded batches (ГРУЖ)
-        loaded_batches = batched_data[batched_data["Груж\\пор"] == "ГРУЖ"].copy()
+        loaded_batches = batched_data[batched_data["load_status"] == "ГРУЖ"].copy()
         
         # Get ЗНП reference data
         znp_data = get_znp_data()
@@ -201,15 +201,24 @@ class FileProcessor:
             logger.error("No ZNP data found in the database. Please import ZNP data first.")
             raise ValueError("No ZNP data found in the database. Please import ZNP data first.")
         
+        # Convert ZNP data column names to English
+        znp_data = znp_data.rename(columns={
+            'Месяц': 'month',
+            'Ст. отправления': 'departure_station',
+            'Ст. назначения': 'destination_station',
+            'Тип вагона': 'wagon_type',
+            'ЗНП': 'znp'
+        })
+        
         # Ensure month column in znp_data is also integer
-        znp_data["Месяц"] = pd.to_numeric(znp_data["Месяц"], errors='coerce').fillna(0).astype(int)
+        znp_data["month"] = pd.to_numeric(znp_data["month"], errors='coerce').fillna(0).astype(int)
         
         # Log the unique months in both dataframes for debugging
-        logger.info(f"Months in loaded_batches: {loaded_batches['Месяц'].unique()}")
-        logger.info(f"Months in znp_data: {znp_data['Месяц'].unique()}")
+        logger.info(f"Months in loaded_batches: {loaded_batches['month'].unique()}")
+        logger.info(f"Months in znp_data: {znp_data['month'].unique()}")
         
         # Merge based on month, stations, and wagon type
-        merge_columns = ["Месяц", "Ст. отправления", "Ст. назначения", "Тип вагона"]
+        merge_columns = ["month", "departure_station", "destination_station", "wagon_type"]
         merged_data = pd.merge(
             loaded_batches,
             znp_data,
@@ -220,47 +229,60 @@ class FileProcessor:
         # Get exceptions data
         exceptions_data = get_exceptions()
         
+        # Convert exceptions data column names to English
+        exceptions_data = exceptions_data.rename(columns={
+            'Накладная №': 'invoice_number',
+            'ExceptionRouteID': 'exception_route_id'
+        })
+        
         # Ensure invoice numbers are strings for merging
-        if "Накладная №" in merged_data.columns:
-            merged_data["Накладная №"] = merged_data["Накладная №"].astype(str)
-        if "Накладная №" in exceptions_data.columns:
-            exceptions_data["Накладная №"] = exceptions_data["Накладная №"].astype(str)
+        if "invoice_number" in merged_data.columns:
+            merged_data["invoice_number"] = merged_data["invoice_number"].astype(str)
+        if "invoice_number" in exceptions_data.columns:
+            exceptions_data["invoice_number"] = exceptions_data["invoice_number"].astype(str)
         
         # Merge exceptions
         exceptions_merged = pd.merge(
             merged_data,
             exceptions_data,
-            on="Накладная №",
+            on="invoice_number",
             how="left"
         )
         
         # Create Final RouteID (Exceptions > ЗНП)
-        batch_to_znp = exceptions_merged.groupby("Batch ID").agg({
-            "ExceptionRouteID": lambda x: next((i for i in x if pd.notna(i)), None),
-            "ЗНП": lambda x: next((i for i in x if pd.notna(i)), None)
+        batch_to_znp = exceptions_merged.groupby("batch_id").agg({
+            "exception_route_id": lambda x: next((i for i in x if pd.notna(i)), None),
+            "znp": lambda x: next((i for i in x if pd.notna(i)), None)
         }).reset_index()
         
         # Create Final RouteID column
-        batch_to_znp["Final RouteID"] = batch_to_znp.apply(
-            lambda row: row["ExceptionRouteID"] if pd.notna(row["ExceptionRouteID"]) else row["ЗНП"],
+        batch_to_znp["final_route_id"] = batch_to_znp.apply(
+            lambda row: row["exception_route_id"] if pd.notna(row["exception_route_id"]) else row["znp"],
             axis=1
         )
         
         # Merge final RouteID back to original data
         final_data = pd.merge(
             batched_data,
-            batch_to_znp[["Batch ID", "Final RouteID"]],
-            on="Batch ID",
+            batch_to_znp[["batch_id", "final_route_id"]],
+            on="batch_id",
             how="left"
         )
         
         # Apply overrides
         overrides_data = get_overrides()
         
+        # Convert overrides data column names to English
+        overrides_data = overrides_data.rename(columns={
+            'Вагон №': 'wagon_number',
+            'Накладная №': 'invoice_number',
+            'ЗНП': 'znp'
+        })
+        
         # Normalize column names for merging
         merge_columns = {
-            "Вагон №": lambda df: pd.to_numeric(df["Вагон №"], errors='coerce').fillna(0).astype('int64'),
-            "Накладная №": lambda df: df["Накладная №"].astype(str)
+            "wagon_number": lambda df: pd.to_numeric(df["wagon_number"], errors='coerce').fillna(0).astype('int64'),
+            "invoice_number": lambda df: df["invoice_number"].astype(str)
         }
         
         # Apply normalization to both dataframes
@@ -278,51 +300,111 @@ class FileProcessor:
         merged_with_overrides = pd.merge(
             final_data,
             overrides_data,
-            on=["Вагон №", "Накладная №"],
+            on=["wagon_number", "invoice_number"],
             how="left",
-            suffixes=("", " Override")
+            suffixes=("", "_override")
         )
         
         # Replace RouteID with Overrides
-        merged_with_overrides["Updated Final RouteID"] = merged_with_overrides.apply(
-            lambda row: row["ЗНП Override"] if pd.notna(row["ЗНП Override"]) else row["Final RouteID"],
+        merged_with_overrides["updated_final_route_id"] = merged_with_overrides.apply(
+            lambda row: row["ЗНП Override"] if pd.notna(row["ЗНП Override"]) else row["final_route_id"],
             axis=1
         )
         
         # Propagate RouteID within batches
         result_data = []
-        for batch_id, batch_df in merged_with_overrides.groupby("Batch ID"):
+        for batch_id, batch_df in merged_with_overrides.groupby("batch_id"):
             if batch_id == 0:  # Skip unassigned batches
                 result_data.append(batch_df)
                 continue
                 
             # Find the first non-null RouteID in the batch
-            valid_route_ids = batch_df["Updated Final RouteID"].dropna()
+            valid_route_ids = batch_df["updated_final_route_id"].dropna()
             if not valid_route_ids.empty:
                 final_route_id = valid_route_ids.iloc[0]
-                batch_df["Propagated Final RouteID"] = final_route_id
+                batch_df["propagated_final_route_id"] = final_route_id
             else:
-                batch_df["Propagated Final RouteID"] = None
+                batch_df["propagated_final_route_id"] = None
                 
             result_data.append(batch_df)
         
         # Combine all processed batches
         result_df = pd.concat(result_data, ignore_index=True)
         
+        # Create W&N code column
+        result_df["wn_code"] = result_df["wagon_number"].astype(str) + result_df["invoice_number"].astype(str)
+        
         # Clean up and rename
         selected_columns = [
-            "Месяц", "Propagated Final RouteID", "Batch ID", "Вагон №", "Накладная №", 
-            "W&N", "Груж\\пор", "Ст. отправления", "Ст. назначения", 
-            "Прибытие на ст. отправл.", "Отчетная дата", "Прибытие на ст. назн."
+            "month", "propagated_final_route_id", "batch_id", "wagon_number", "invoice_number", 
+            "wn_code", "load_status", "departure_station", "destination_station", 
+            "departure_arrival", "report_date", "destination_arrival"
         ]
         final_table = result_df[selected_columns].copy()
-        final_table = final_table.rename(columns={"Propagated Final RouteID": "ЗНП"})
+        
+        # Convert back to Russian column names for output
+        final_table = final_table.rename(columns={
+            'month': 'Месяц',
+            'propagated_final_route_id': 'ЗНП',
+            'batch_id': 'Batch ID',
+            'wagon_number': 'Вагон №',
+            'invoice_number': 'Накладная №',
+            'wn_code': 'W&N',
+            'load_status': 'Груж\\пор',
+            'departure_station': 'Ст. отправления',
+            'destination_station': 'Ст. назначения',
+            'departure_arrival': 'Прибытие на ст. отправл.',
+            'report_date': 'Отчетная дата',
+            'destination_arrival': 'Прибытие на ст. назн.'
+        })
         
         # Filter for records with valid ЗНП
         final_table = final_table.dropna(subset=["ЗНП"])
         
+        # Check for duplicate Route IDs more thoroughly
+        logger.info("Checking for duplicate Route IDs...")
+        
+        # First check duplicates by ZNP only
+        znp_duplicates = final_table[final_table.duplicated(subset=["ЗНП"], keep=False)]
+        if not znp_duplicates.empty:
+            logger.warning(f"Found {len(znp_duplicates)} rows where same ZNP is used multiple times")
+            logger.warning("Sample of duplicated ZNPs:")
+            for znp in znp_duplicates["ЗНП"].unique()[:5]:  # Show first 5 examples
+                count = len(znp_duplicates[znp_duplicates["ЗНП"] == znp])
+                logger.warning(f"ZNP {znp} appears {count} times")
+        
+        # Then check complete Route ID duplicates (ZNP + Wagon + Invoice)
+        route_id_duplicates = final_table[final_table.duplicated(subset=["ЗНП", "Вагон №", "Накладная №"], keep=False)]
+        if not route_id_duplicates.empty:
+            logger.warning(f"Found {len(route_id_duplicates)} rows with duplicate complete Route IDs")
+            logger.warning("These are cases where same ZNP is used for same wagon and invoice")
+            
+            # Group duplicates to show examples
+            duplicate_groups = route_id_duplicates.groupby(["ЗНП", "Вагон №", "Накладная №"])
+            logger.warning("Sample of duplicate groups:")
+            for name, group in list(duplicate_groups)[:3]:  # Show first 3 examples
+                znp, wagon, invoice = name
+                logger.warning(f"ZNP: {znp}, Wagon: {wagon}, Invoice: {invoice} appears {len(group)} times")
+                logger.warning(f"Dates: {group['Отчетная дата'].tolist()}")
+            
+            # Remove duplicates, keeping the latest entry
+            logger.warning("Removing duplicates, keeping the latest entry based on report date")
+            final_table = final_table.sort_values("Отчетная дата", ascending=False)
+            final_table = final_table.drop_duplicates(subset=["ЗНП", "Вагон №", "Накладная №"], keep='first')
+            
+            # Verify no duplicates remain
+            remaining_duplicates = final_table[final_table.duplicated(subset=["ЗНП", "Вагон №", "Накладная №"], keep=False)]
+            if remaining_duplicates.empty:
+                logger.info("Successfully removed all duplicates")
+            else:
+                logger.error(f"Still found {len(remaining_duplicates)} duplicate rows after cleanup!")
+        
         # Add custom route description
         final_table["Custom"] = final_table["Ст. отправления"] + " - " + final_table["Ст. назначения"]
+        
+        # Log final statistics
+        logger.info(f"Final table contains {len(final_table)} unique Route IDs")
+        logger.info(f"Number of unique ZNPs: {final_table['ЗНП'].nunique()}")
         
         return final_table
     
@@ -367,3 +449,129 @@ class FileProcessor:
         
         logger.info("Workflow processing completed successfully")
         return output_path
+
+    def generate_route_suggestions(self, stg_folder: str) -> List[Dict]:
+        """Generate route suggestions from STG files."""
+        all_data = []
+        
+        # Get existing ZNP data
+        znp_data = get_znp_data()
+        znp_lookup = {}
+        if not znp_data.empty:
+            for _, row in znp_data.iterrows():
+                key = (
+                    int(row["Месяц"]),
+                    str(row["Ст. отправления"]),
+                    str(row["Ст. назначения"]),
+                    str(row["Тип вагона"]) if pd.notna(row["Тип вагона"]) else ""
+                )
+                znp_lookup[key] = str(row["ЗНП"])
+        
+        # Process all STG files
+        stg_files = get_files_by_pattern(stg_folder, "STGDaily_*.xlsx")
+        for file_path in stg_files:
+            try:
+                # Read the file
+                df = pd.read_excel(file_path)
+                
+                # Extract month from "Отчетная дата"
+                if "Отчетная дата" in df.columns:
+                    df["Месяц"] = pd.to_datetime(df["Отчетная дата"]).dt.month
+                elif "Месяц" in df.columns:
+                    df["Месяц"] = df["Месяц"].astype(int)
+                else:
+                    logger.warning(f"No date column found in {file_path}")
+                    continue
+                
+                # Filter for loaded batches
+                df = df[df["Груж\\пор"] == "ГРУЖ"]
+                
+                # Select relevant columns and handle empty wagon types
+                required_columns = ["Месяц", "Ст. отправления", "Ст. назначения", "Тип вагона"]
+                if not all(col in df.columns for col in required_columns):
+                    logger.warning(f"Missing required columns in {file_path}")
+                    continue
+                
+                route_data = df[required_columns].copy()
+                # Fill empty wagon types with empty string
+                route_data["Тип вагона"] = route_data["Тип вагона"].fillna("")
+                all_data.append(route_data)
+                
+            except Exception as e:
+                logger.error(f"Error processing {file_path}: {str(e)}")
+                continue
+        
+        if not all_data:
+            raise ValueError("No valid data found in STG files")
+        
+        # Combine all data
+        combined_data = pd.concat(all_data, ignore_index=True)
+        
+        # Group by route and count batches
+        grouped = combined_data.groupby(
+            ["Месяц", "Ст. отправления", "Ст. назначения", "Тип вагона"]
+        ).size().reset_index(name="Count")
+        
+        # Sort by station names
+        grouped = grouped.sort_values(["Ст. отправления", "Ст. назначения"])
+        
+        # Add ZNP values from lookup
+        result = []
+        for _, row in grouped.iterrows():
+            key = (
+                int(row["Месяц"]),
+                str(row["Ст. отправления"]),
+                str(row["Ст. назначения"]),
+                str(row["Тип вагона"]) if pd.notna(row["Тип вагона"]) else ""
+            )
+            route_dict = row.to_dict()
+            route_dict["ЗНП"] = znp_lookup.get(key, "")  # Add existing ZNP value if found
+            result.append(route_dict)
+        
+        return result
+
+    def process_stg_file(self, file_path: str) -> None:
+        """Process a single STG file."""
+        try:
+            logger.info(f"Processing STG file: {file_path}")
+            
+            # Read the file
+            df = pd.read_excel(file_path)
+            
+            # Ensure column headers are standardized
+            df.columns = [col.strip() for col in df.columns]
+            
+            # Apply column type standardization
+            column_types = {
+                "Вагон №": 'int64',
+                "Накладная №": 'str',
+                "Ст. отправления": 'str',
+                "Ст. назначения": 'str',
+                "Прибытие на ст. отправл.": 'datetime64',
+                "Отчетная дата": 'datetime64',
+                "Прибытие на ст. назн.": 'datetime64',
+                "Груж\\пор": 'str',
+                "Тип вагона": 'str',
+                "Расстояние": 'int64',
+                "Собственник": 'str',
+                "Грузоотправитель": 'str',
+                "Грузополучатель": 'str',
+                "Простой в ожидании ремонта": 'float'
+            }
+            
+            df = standardize_column_types(df, column_types)
+            
+            # Extract month if not present
+            if "Месяц" not in df.columns:
+                df["Месяц"] = pd.to_datetime(df["Отчетная дата"]).dt.month
+            
+            # Save processed file
+            output_filename = f"Processed_{os.path.basename(file_path)}"
+            output_path = os.path.join(self.output_dir, output_filename)
+            df.to_excel(output_path, index=False)
+            
+            logger.info(f"Successfully processed {file_path} -> {output_path}")
+            
+        except Exception as e:
+            logger.error(f"Error processing STG file {file_path}: {str(e)}")
+            raise

@@ -65,6 +65,9 @@ class ExpenseProcessor:
             if main_data.empty:
                 return False, "Empty data after header detection"
             
+            # Store original row count
+            original_row_count = len(main_data)
+            
             # Standardize column names
             main_data.rename(columns={
                 'Номер вагона': 'Вагон №',
@@ -82,9 +85,12 @@ class ExpenseProcessor:
             
             # Ensure ЗНП column is numeric and fill nulls with 0
             output_column_name = 'ЗНП'
-            merged_data[output_column_name] = pd.to_numeric(
-                merged_data.get(output_column_name, 0), errors='coerce'
-            ).fillna(0).astype(int)
+            if output_column_name not in merged_data.columns:
+                merged_data[output_column_name] = 0
+            else:
+                merged_data[output_column_name] = pd.to_numeric(
+                    merged_data[output_column_name], errors='coerce'
+                ).fillna(0).astype(int)
             
             # Add or update ЗНП column in Excel
             if output_column_name not in [cell.value for cell in original_ws[header_row_index]]:
@@ -96,8 +102,8 @@ class ExpenseProcessor:
             
             znp_col_index = [cell.value for cell in original_ws[header_row_index]].index(output_column_name) + 1
             
-            # Write ЗНП values to Excel
-            for row_idx, value in enumerate(merged_data[output_column_name], start=header_row_index + 1):
+            # Write ЗНП values to Excel (only for original number of rows)
+            for row_idx, value in enumerate(merged_data[output_column_name][:original_row_count], start=header_row_index + 1):
                 original_ws.cell(row=row_idx, column=znp_col_index, value=value)
             
             # Add 1C column using matrix mappings
@@ -115,8 +121,8 @@ class ExpenseProcessor:
             
             dla_1c_col_index = [cell.value for cell in original_ws[header_row_index]].index('для 1С') + 1
             
-            # Write для 1С values to Excel
-            for row_idx, value in enumerate(merged_data['для 1С'], start=header_row_index + 1):
+            # Write для 1С values to Excel (only for original number of rows)
+            for row_idx, value in enumerate(merged_data['для 1С'][:original_row_count], start=header_row_index + 1):
                 original_ws.cell(row=row_idx, column=dla_1c_col_index, value=value)
             
             # Save the processed file
@@ -161,6 +167,15 @@ class ExpenseProcessor:
         reference_data = pd.read_csv(route_id_data_path, encoding='utf-8')
         reference_data['Вагон №'] = reference_data['Вагон №'].apply(self.format_value)
         reference_data['Накладная №'] = reference_data['Накладная №'].apply(self.format_value)
+        
+        # Remove completely identical duplicates from reference data
+        initial_len = len(reference_data)
+        # First remove exact duplicates
+        reference_data = reference_data.drop_duplicates()
+        # Then handle duplicates by wagon and invoice, keeping the first occurrence
+        reference_data = reference_data.drop_duplicates(subset=['Вагон №', 'Накладная №'], keep='first')
+        if len(reference_data) < initial_len:
+            logger.info(f"Removed {initial_len - len(reference_data)} duplicate rows from reference data")
         
         # Get active routes and matrix mappings
         active_routes = get_active_routes()

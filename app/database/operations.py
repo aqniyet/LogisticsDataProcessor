@@ -1,41 +1,59 @@
 import pandas as pd
 import logging
 from sqlalchemy.orm import Session
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
+from datetime import datetime
+from sqlalchemy import func, create_engine
+from sqlalchemy.orm import sessionmaker
+import os
 
-from app.database.models import ZNP, Exception, Override, ActiveRoute, MatrixMapping, WagonInvoice, ProcessingLog
+from app.database.models import ZNP, Exception, Override, ActiveRoute, MatrixMapping, WagonInvoice, ProcessingLog, STGData
 
 logger = logging.getLogger(__name__)
 
-# Global session variable, will be initialized in the application startup
-_db_session = None
+# Create engine and session factory
+DATABASE_URL = 'sqlite:///logistics.db'
+engine = create_engine(DATABASE_URL)
+SessionFactory = sessionmaker(bind=engine)
 
-def init_session(session):
-    """Initialize the global database session."""
-    global _db_session
-    _db_session = session
+# Global session variable
+_session = None
+
+def init_session(session: Session):
+    """Initialize the global session."""
+    global _session
+    _session = session
 
 def get_session() -> Session:
     """Get the current database session."""
-    if _db_session is None:
+    global _session
+    if _session is None:
         raise RuntimeError("Database session not initialized")
-    return _db_session
+    return _session
 
 # ZNP operations
 def get_znp_data() -> pd.DataFrame:
     """Get all ZNP data as a DataFrame."""
-    session = get_session()
-    znp_records = session.query(ZNP).all()
-    
-    data = [{
-        'Месяц': record.month,
-        'Ст. отправления': record.departure_station,
-        'Ст. назначения': record.destination_station,
-        'Тип вагона': record.wagon_type,
-        'ЗНП': record.znp_code
-    } for record in znp_records]
-    
-    return pd.DataFrame(data)
+    try:
+        session = get_session()
+        znp_records = session.query(ZNP).all()
+        
+        if not znp_records:
+            logger.warning("No ZNP records found in database")
+            return pd.DataFrame(columns=['Месяц', 'Ст. отправления', 'Ст. назначения', 'Тип вагона', 'ЗНП'])
+        
+        data = [{
+            'Месяц': record.month,
+            'Ст. отправления': record.departure_station,
+            'Ст. назначения': record.destination_station,
+            'Тип вагона': record.wagon_type,
+            'ЗНП': record.znp_code
+        } for record in znp_records]
+        
+        return pd.DataFrame(data)
+    except Exception as e:
+        logger.error(f"Error retrieving ZNP data: {str(e)}")
+        return pd.DataFrame(columns=['Месяц', 'Ст. отправления', 'Ст. назначения', 'Тип вагона', 'ЗНП'])
 
 def add_znp_data(df: pd.DataFrame) -> int:
     """
@@ -362,3 +380,144 @@ def log_operation(operation: str, status: str, file_name: Optional[str] = None,
     except Exception as e:
         session.rollback()
         logger.error(f"Error logging operation: {str(e)}")
+
+def add_stg_data(df):
+    """Add STG data to the database from a pandas DataFrame."""
+    try:
+        # Create a new session
+        session = SessionFactory()
+        
+        # Clear existing STG data
+        session.query(STGData).delete()
+        
+        # Convert DataFrame rows to STGData objects
+        stg_objects = []
+        for _, row in df.iterrows():
+            try:
+                stg_data = STGData(
+                    wagon_number=None if pd.isna(row['wagon_number']) else int(row['wagon_number']),
+                    invoice_number=row['invoice_number'],
+                    departure_station=row['departure_station'],
+                    destination_station=row['destination_station'],
+                    departure_arrival=None if pd.isna(row['departure_arrival']) else row['departure_arrival'],
+                    report_date=None if pd.isna(row['report_date']) else row['report_date'],
+                    destination_arrival=None if pd.isna(row['destination_arrival']) else row['destination_arrival'],
+                    load_status=row['load_status'],
+                    wagon_type=row['wagon_type'],
+                    distance=None if pd.isna(row['distance']) else float(row['distance']),
+                    owner=row['owner'],
+                    shipper=row['shipper'],
+                    consignee=row['consignee'],
+                    repair_wait_time=None if pd.isna(row['repair_wait_time']) else float(row['repair_wait_time']),
+                    wn_code=row['wn_code'],
+                    batch_id=None if pd.isna(row['batch_id']) else int(row['batch_id']),
+                    month=None if pd.isna(row['month']) else int(row['month']),
+                    route_id=row['route_id']
+                )
+                stg_objects.append(stg_data)
+            except Exception as e:
+                logger.warning(f"Error processing row: {row}. Error: {str(e)}")
+                continue
+        
+        # Bulk save the objects
+        if stg_objects:
+            session.bulk_save_objects(stg_objects)
+            session.commit()
+            logger.info(f"Added {len(stg_objects)} records to STG data")
+        else:
+            logger.warning("No valid records to add to STG data")
+            
+    except Exception as e:
+        logger.error(f"Error adding STG data: {str(e)}")
+        if session:
+            session.rollback()
+        raise
+    finally:
+        if session:
+            session.close()
+
+def get_stg_data(filters: Dict[str, Any] = None) -> pd.DataFrame:
+    """
+    Retrieve STG data from the database with optional filters.
+    Returns a DataFrame with the results.
+    """
+    session = get_session()
+    
+    try:
+        # Start with base query
+        query = session.query(STGData)
+        
+        # Apply filters if provided
+        if filters:
+            if 'month' in filters:
+                query = query.filter(STGData.month == filters['month'])
+            if 'wagon_type' in filters:
+                query = query.filter(STGData.wagon_type == filters['wagon_type'])
+            if 'departure_station' in filters:
+                query = query.filter(STGData.departure_station == filters['departure_station'])
+            if 'destination_station' in filters:
+                query = query.filter(STGData.destination_station == filters['destination_station'])
+        
+        # Convert to DataFrame
+        results = query.all()
+        if not results:
+            return pd.DataFrame()
+        
+        data = []
+        for result in results:
+            data.append({
+                'Вагон №': result.wagon_number,
+                'Накладная №': result.invoice_number,
+                'Ст. отправления': result.departure_station,
+                'Ст. назначения': result.destination_station,
+                'Прибытие на ст. отправл.': result.departure_arrival,
+                'Отчетная дата': result.report_date,
+                'Прибытие на ст. назн.': result.destination_arrival,
+                'Груж\\пор': result.load_status,
+                'Тип вагона': result.wagon_type,
+                'Расстояние': result.distance,
+                'Собственник': result.owner,
+                'Грузоотправитель': result.shipper,
+                'Грузополучатель': result.consignee,
+                'Простой в ожидании ремонта': result.repair_wait_time,
+                'W&N': result.wn_code,
+                'Batch ID': result.batch_id,
+                'Месяц': result.month,
+                'Final RouteID': result.route_id
+            })
+        
+        return pd.DataFrame(data)
+    
+    except Exception as e:
+        log_operation("get_stg_data", "ERROR", str(e))
+        raise
+
+def update_stg_wagon_types(changes: List[Dict[str, Any]]) -> int:
+    """
+    Update wagon types in STG data based on provided changes.
+    Returns the number of records updated.
+    """
+    session = get_session()
+    
+    try:
+        updated_count = 0
+        for change in changes:
+            # Update matching records
+            result = session.query(STGData).filter(
+                STGData.month == change['Месяц'],
+                STGData.departure_station == change['Ст. отправления'],
+                STGData.destination_station == change['Ст. назначения'],
+                STGData.wagon_type == change['old_wagon_type']
+            ).update({'wagon_type': change['new_wagon_type']})
+            
+            updated_count += result
+        
+        session.commit()
+        log_operation("update_stg_wagon_types", "SUCCESS", f"Updated {updated_count} records")
+        
+        return updated_count
+    
+    except Exception as e:
+        session.rollback()
+        log_operation("update_stg_wagon_types", "ERROR", str(e))
+        raise

@@ -118,6 +118,33 @@ class ProcessingLog(Base):
     def __repr__(self):
         return f"<ProcessingLog(id={self.id}, operation='{self.operation}', status='{self.status}')>"
 
+class STGData(Base):
+    """Model for storing STG file data."""
+    __tablename__ = 'stg_data'
+    
+    id = Column(Integer, primary_key=True)
+    wagon_number = Column(Integer, nullable=True)
+    invoice_number = Column(String, nullable=True)
+    departure_station = Column(String, nullable=True)
+    destination_station = Column(String, nullable=True)
+    departure_arrival = Column(DateTime, nullable=True)
+    report_date = Column(DateTime, nullable=True)
+    destination_arrival = Column(DateTime, nullable=True)
+    load_status = Column(String, nullable=True)  # Груж\пор
+    wagon_type = Column(String, nullable=True)
+    distance = Column(Float, nullable=True)
+    owner = Column(String, nullable=True)
+    shipper = Column(String, nullable=True)
+    consignee = Column(String, nullable=True)
+    repair_wait_time = Column(Float, nullable=True)
+    wn_code = Column(String, nullable=True)  # W&N
+    batch_id = Column(Integer, nullable=True)
+    month = Column(Integer, nullable=True)
+    route_id = Column(String, nullable=True)
+    
+    def __repr__(self):
+        return f"<STGData(wagon={self.wagon_number}, route={self.route_id})>"
+
 # Database initialization function
 def init_db(db_path):
     """Initialize the database and create tables."""
