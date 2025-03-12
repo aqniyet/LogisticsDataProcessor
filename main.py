@@ -9,13 +9,13 @@ from app.utils.file_utils import ensure_directory_exists
 from app.config import load_config
 from app.core.expense_processor import ExpenseProcessor
 from app.database.models import init_db
-from app.database.operations import init_session
+from app.database.operations import init_session, get_database_path
 from app.core.file_processor import FileProcessor
 
 # Setup logging
 def setup_logging():
-    log_dir = "logs"
-    ensure_directory_exists(log_dir)
+    log_dir = os.path.join(os.getenv('APPDATA'), 'Logistics Data Processor', 'logs')
+    os.makedirs(log_dir, exist_ok=True)
     
     logging.basicConfig(
         level=logging.INFO,
@@ -31,7 +31,7 @@ def process_expenses(config, folder_type):
     logger = logging.getLogger(__name__)
     
     # Initialize database
-    db_path = config.get("database_path", "logistics_processor.db")
+    db_path = get_database_path()
     engine, session_maker = init_db(db_path)
     session = session_maker()
     init_session(session)
@@ -53,7 +53,7 @@ def process_stg(config):
     logger = logging.getLogger(__name__)
     
     # Initialize database
-    db_path = config.get("database_path", "logistics_processor.db")
+    db_path = get_database_path()
     engine, session_maker = init_db(db_path)
     session = session_maker()
     init_session(session)
@@ -86,31 +86,14 @@ def main():
     setup_logging()
     logger = logging.getLogger(__name__)
     
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Logistics Data Processor')
-    parser.add_argument('--gui', action='store_true', help='Run in GUI mode')
-    parser.add_argument('--expenses', choices=['1', '2'], help='Process expense files (type 1 or 2)')
-    parser.add_argument('--stg', action='store_true', help='Process STG files')
-    args = parser.parse_args()
-    
     # Load configuration
     config = load_config()
     
-    if args.gui:
-        app = QApplication(sys.argv)
-        window = LogisticsProcessorApp()
-        window.show()
-        sys.exit(app.exec_())
-    elif args.expenses:
-        success = process_expenses(config, args.expenses)
-        sys.exit(0 if success else 1)
-    elif args.stg:
-        success = process_stg(config)
-        sys.exit(0 if success else 1)
-    else:
-        # Default behavior (process STG files)
-        success = process_stg(config)
-        sys.exit(0 if success else 1)
+    # Always run in GUI mode
+    app = QApplication(sys.argv)
+    window = LogisticsProcessorApp()
+    window.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()
